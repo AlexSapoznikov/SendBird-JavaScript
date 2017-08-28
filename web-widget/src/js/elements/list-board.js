@@ -8,7 +8,7 @@ const OPTION_TOOLTIP_TEXT = 'Log out';
 const NEW_CHAT_TOOLTIP_TEXT = 'New Message';
 
 const TITLE_TOP_LOGIN = 'SendBird Widget';
-const TITLE_TOP_CHANNEL = 'Channel List';
+const TITLE_TOP_CHANNEL = 'Users list';
 const TITLE_LOGIN_USER_ID = 'USER ID';
 const TITLE_LOGIN_NICKNAME = 'NICKNAME';
 const TITLE_LOGIN_BTN = 'Start Chat';
@@ -21,7 +21,7 @@ const INPUT_MAX_LENGTH = 20;
 let isLogoutClick = false;
 
 class ListBoard extends Element {
-  constructor(widget) {
+  constructor(widget, ignoreLoginWindow) {
     super();
     this._createBoard();
     widget.appendChild(this.self);
@@ -54,14 +54,6 @@ class ListBoard extends Element {
     this.btnOption = this.createDiv();
     this._setClass(this.btnOption, [className.BTN, className.IC_OPTION]);
 
-    this.btnLogout = this.createDiv();
-    this._setClass(this.btnLogout, [className.OPTION_MENU]);
-    var logoutText = this.createDiv();
-    this._setClass(logoutText, [className.OPTION_CONTENT]);
-    this._setContent(logoutText, OPTION_TOOLTIP_TEXT);
-    this.btnLogout.appendChild(logoutText);
-
-    this.btnOption.appendChild(this.btnLogout);
     boardTop.appendChild(this.btnOption);
 
     this.addOptionClickEvent();
@@ -85,11 +77,8 @@ class ListBoard extends Element {
   addOptionClickEvent() {
     if (!this._getOptionEventLock()) {
       this._setClickEvent(this.btnOption, () => {
-        if (hasClass(this.btnOption, className.ACTIVE)) {
-          this.hideLogoutBtn();
-        } else {
+        if (!hasClass(this.btnOption, className.ACTIVE)) {
           addClass(this.btnOption, className.ACTIVE);
-          show(this.btnLogout);
         }
       });
     }
@@ -97,7 +86,6 @@ class ListBoard extends Element {
 
   addLogoutClickEvent(action) {
     this.setOptionEventLock(true);
-    this._setClickEvent(this.btnLogout, action);
   }
 
   setOptionEventLock(value) {
@@ -105,11 +93,6 @@ class ListBoard extends Element {
   }
   _getOptionEventLock() {
     return isLogoutClick;
-  }
-
-  hideLogoutBtn() {
-    removeClass(this.btnOption, className.ACTIVE);
-    hide(this.btnLogout);
   }
 
   addNewChatClickEvent(action) {
