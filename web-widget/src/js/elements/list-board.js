@@ -12,8 +12,7 @@ const TITLE_TOP_CHANNEL = 'Users list';
 const TITLE_LOGIN_USER_ID = 'USER ID';
 const TITLE_LOGIN_NICKNAME = 'NICKNAME';
 const TITLE_LOGIN_BTN = 'Start Chat';
-const TITLE_EMPTY_ITEM = 'Click below to start';
-const TITLE_EMPTY_BTN = 'Create';
+const TITLE_EMPTY_ITEM = 'You currently have no conversations';
 
 const INPUT_TYPE = 'text';
 const INPUT_MAX_LENGTH = 20;
@@ -58,14 +57,9 @@ class ListBoard extends Element {
 
     this.addOptionClickEvent();
 
-    this.btnNewChat = this.createDiv();
-    this._setClass(this.btnNewChat, [className.BTN, className.IC_NEW_CHAT]);
-
     var newChatTooltip = this.createSpan();
     this._setClass(newChatTooltip, [className.TOOLTIP]);
     this._setContent(newChatTooltip, NEW_CHAT_TOOLTIP_TEXT);
-    this.btnNewChat.appendChild(newChatTooltip);
-    boardTop.appendChild(this.btnNewChat);
 
     this.self.appendChild(boardTop);
   }
@@ -93,10 +87,6 @@ class ListBoard extends Element {
   }
   _getOptionEventLock() {
     return isLogoutClick;
-  }
-
-  addNewChatClickEvent(action) {
-    this._setClickEvent(this.btnNewChat, action);
   }
 
   createLoginForm() {
@@ -151,7 +141,6 @@ class ListBoard extends Element {
     }
     this._setContent(this.topTitle, TITLE_TOP_LOGIN);
     hide(this.btnOption);
-    hide(this.btnNewChat);
     this.self.appendChild(this.loginForm);
     this._toggleLoginBtn();
   }
@@ -211,7 +200,6 @@ class ListBoard extends Element {
     }
     this._setContent(this.topTitle, TITLE_TOP_CHANNEL);
     show(this.btnOption);
-    show(this.btnNewChat);
     this.self.appendChild(this.listContent);
   }
 
@@ -299,15 +287,7 @@ class ListBoard extends Element {
     this._setClass(emptyTitle, [className.TITLE]);
     this._setContent(emptyTitle, TITLE_EMPTY_ITEM);
 
-    var emptyBtn = this.createDiv();
-    this._setClickEvent(emptyBtn, () => {
-      this.btnNewChat.click();
-    });
-    this._setClass(emptyBtn, [className.NEW_CHAT_BTN]);
-    this._setContent(emptyBtn, TITLE_EMPTY_BTN);
-
     emptyList.appendChild(emptyTitle);
-    emptyList.appendChild(emptyBtn);
     this.emptyItem = emptyList;
     this.list.appendChild(emptyList);
   }

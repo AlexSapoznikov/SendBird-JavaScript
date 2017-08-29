@@ -18,7 +18,7 @@ const MEMBER_COUNT_DEFAULT = '0';
 const MARGIN_TOP_MESSAGE = '3px';
 const MESSAGE_NONE_IMAGE_HEIGHT = '10px';
 const DISPLAY_NONE = 'none';
-const TITLE_START_CHAT_BTN = 'Start Chat';
+const NO_USERS = 'You currently have no conversations';
 const MESSAGE_CONTENT_HEIGHT_DEFAULT = 328;
 const MESSAGE_INPUT_HEIGHT_DEFAULT = 29;
 const MESSAGE_TYPING_SEVERAL = 'Several people are typing...';
@@ -562,15 +562,8 @@ class ChatSection extends Element {
     var contentBottom = this.createDiv();
     this._setClass(contentBottom, [className.CONTENT_BOTTOM]);
 
-    var contentBottomBtn = this.createDiv();
-    this._setClass(contentBottomBtn, [className.NEW_CHAT_BTN, className.DISABLED]);
-    this._setContent(contentBottomBtn, TITLE_START_CHAT_BTN);
-    contentBottom.appendChild(contentBottomBtn);
-    chatContent.appendChild(contentBottom);
-
     target.content.parentNode.removeChild(target.content);
     target.content = chatContent;
-    target.startBtn = contentBottomBtn;
     target.userContent = userContent;
     target.appendChild(chatContent);
     this._setContent(target.topTitle, TITLE_CHAT_TITLE_NEW_CHAT);
