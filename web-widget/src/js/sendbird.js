@@ -83,6 +83,7 @@ class Sendbird {
     this.sb.GroupChannel.createChannelWithUserIds(userIds, true, '', '', '', function(channel, error) {
       if (error) {
         console.error(error);
+        action(channel, error);
         return;
       }
       action(channel);

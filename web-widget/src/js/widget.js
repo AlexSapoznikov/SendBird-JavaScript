@@ -216,36 +216,44 @@ class SBWidget {
     }
   }
 
-  startChatWith(email) {
-    var chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
-    this.responsiveChatSection(null, true);
-
-    this.chatSection.createNewChatBoard(chatBoard);
+  startChatWith(emails) {
+    let selectedUserIds = Array.isArray(emails) ? emails : [emails];
 
     this.sb.userListQuery = null;
-    // let selectedUserIds = this.chatSection.getSelectedUserIds(chatBoard.userContent);
-    let selectedUserIds = ['erik@dealer'];
-    this.sb.createNewChannel(selectedUserIds, (channel) => {
+    this.sb.createNewChannel(selectedUserIds, (channel, error) => {
+      if (error) {
+        throw error;
+      }
+
+      const foundActive = this.activeChannelSetList.find(c => c.channel && c.channel.url === channel.url);
+      if (foundActive) {
+        return;
+      }
+
+      const chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
+      this.chatSection.createNewChatBoard(chatBoard);
+      this.responsiveChatSection(null, true);
+
       chatBoard.parentNode.removeChild(chatBoard);
       this._connectChannel(channel.url, true);
       this.listBoard.checkEmptyList();
-    });
 
-    this.spinner.insert(chatBoard.userContent);
+      this.spinner.insert(chatBoard.userContent);
 
-    this.sb.getUserList((userList) => {
-      this.spinner.remove(chatBoard.userContent);
-      this.setUserList(chatBoard, userList);
-    });
+      this.sb.getUserList((userList) => {
+        this.spinner.remove(chatBoard.userContent);
+        this.setUserList(chatBoard, userList);
+      });
 
-    this.chatSection.addClickEvent(chatBoard.closeBtn, () => {
-      this.chatSection.closeChatBoard(chatBoard);
-      this.closePopup();
-      this.responsiveChatSection();
+      this.chatSection.addClickEvent(chatBoard.closeBtn, () => {
+        this.chatSection.closeChatBoard(chatBoard);
+        this.closePopup();
+        this.responsiveChatSection();
+      });
+      hide(chatBoard.leaveBtn);
+      hide(chatBoard.memberBtn);
+      hide(chatBoard.inviteBtn);
     });
-    hide(chatBoard.leaveBtn);
-    hide(chatBoard.memberBtn);
-    hide(chatBoard.inviteBtn);
   }
 
   _start (appId, props = {}) {
@@ -270,41 +278,6 @@ class SBWidget {
       });
       this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
     });
-
-    // this.listBoard.addNewChatClickEvent(() => {
-    //   var chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
-    //   this.responsiveChatSection(null, true);
-    //
-    //   this.chatSection.createNewChatBoard(chatBoard);
-    //   this.chatSection.addClickEvent(chatBoard.startBtn, () => {
-    //     if (!hasClass(chatBoard.startBtn, className.DISABLED)) {
-    //       addClass(chatBoard.startBtn, className.DISABLED);
-    //       this.sb.userListQuery = null;
-    //       this.spinner.insert(chatBoard.startBtn);
-    //       let selectedUserIds = this.chatSection.getSelectedUserIds(chatBoard.userContent);
-    //       this.sb.createNewChannel(selectedUserIds, (channel) => {
-    //         chatBoard.parentNode.removeChild(chatBoard);
-    //         this._connectChannel(channel.url, true);
-    //         this.listBoard.checkEmptyList();
-    //       });
-    //     }
-    //   });
-    //   this.spinner.insert(chatBoard.userContent);
-    //
-    //   this.sb.getUserList((userList) => {
-    //     this.spinner.remove(chatBoard.userContent);
-    //     this.setUserList(chatBoard, userList);
-    //   });
-    //
-    //   this.chatSection.addClickEvent(chatBoard.closeBtn, () => {
-    //     this.chatSection.closeChatBoard(chatBoard);
-    //     this.closePopup();
-    //     this.responsiveChatSection();
-    //   });
-    //   hide(chatBoard.leaveBtn);
-    //   hide(chatBoard.memberBtn);
-    //   hide(chatBoard.inviteBtn);
-    // });
 
     this.listBoard.addMinimizeClickEvent(() => {
       this.closePopup();
