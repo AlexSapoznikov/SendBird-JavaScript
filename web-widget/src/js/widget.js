@@ -78,6 +78,26 @@ class SBWidget {
     }
   }
 
+  isConnected () {
+    return this.sb && this.sb.isConnected();
+  }
+
+  disconnect (cb) {
+    if (this.sb) {
+      try {
+        this.sb.disconnect(cb);
+      } catch (err) {
+        // Do not throw error when disconnection initiated while connecting
+      }
+    }
+  }
+
+  setVisible (visible) {
+    if (this.widget) {
+      visible ? show(this.widget) : hide(this.widget);
+    }
+  }
+
   _initClickEvent (event) {
     var _checkPopup = function (_target, obj) {
       if (obj === _target || hasClass(_target, className.IC_MEMBERS) || hasClass(_target, className.IC_INVITE)) {
