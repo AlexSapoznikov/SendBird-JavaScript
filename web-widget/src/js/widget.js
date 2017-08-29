@@ -84,17 +84,26 @@ class SBWidget {
 
   disconnect (cb) {
     if (this.sb) {
-      try {
-        this.sb.disconnect(cb);
-      } catch (err) {
-        // Do not throw error when disconnection initiated while connecting
-      }
+      this.sb.disconnect(() => {
+        this.reset();
+        if (cb) {
+          cb();
+        }
+      });
     }
   }
 
   setVisible (visible) {
     if (this.widget) {
-      visible ? show(this.widget) : hide(this.widget);
+      if (visible) {
+        show(this.widget);
+        return;
+      }
+      this.listBoard.self.style.display = 'none';
+      this.closePopup();
+      setTimeout(() => {
+        hide(this.widget);
+      }, 0);
     }
   }
 

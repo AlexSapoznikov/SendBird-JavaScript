@@ -86,7 +86,6 @@ export const className = {
   FADE_IN: 'sb-fade-in',
   FADE_OUT: 'sb-fade-out',
   SPINNER: 'sb-spinner'
-
 };
 
 export const styleValue = {
