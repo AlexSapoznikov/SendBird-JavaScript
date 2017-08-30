@@ -8,7 +8,6 @@ const CHAT_SECTION_RIGHT_MAX = '280px';
 const CHAT_SECTION_RIGHT_MIN = '60px';
 const TOOLTIP_MEMBER_LIST = 'Member List';
 const TOOLTIP_CHANNEL_LEAVE = 'Channel Leave';
-const TOOLTIP_INVITE_MEMBER = 'Invite Member';
 const TITLE_CHAT_TITLE_DEFAULT = '';
 const TITLE_CHAT_TITLE_NEW_CHAT = 'New Chat';
 const TITLE_CHAT_LEAVE_POPUP = 'Do you really want to leave?';
@@ -118,17 +117,6 @@ class ChatSection extends Element {
     topBtnMembers.appendChild(tooltipMember);
     chatTop.appendChild(topBtnMembers);
 
-    var topBtnInvite = this.createDiv();
-    this._setClass(topBtnInvite, [className.BTN, className.IC_INVITE]);
-    chatBoard.inviteBtn = topBtnInvite;
-
-    var tooltipInvite = this.createSpan();
-    this._setClass(tooltipInvite, [className.TOOLTIP]);
-    this._setContent(tooltipInvite, TOOLTIP_INVITE_MEMBER);
-
-    topBtnInvite.appendChild(tooltipInvite);
-    chatTop.appendChild(topBtnInvite);
-
     chatBoard.appendChild(chatTop);
 
     var chatContent = this.createDiv();
@@ -182,14 +170,6 @@ class ChatSection extends Element {
     for (var i = 0 ; i < items.length ; i++) {
       let item = items[i];
       removeClass(item.memberBtn, className.ACTIVE);
-    }
-  }
-
-  removeInvitePopup() {
-    let items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
-    for (var i = 0 ; i < items.length ; i++) {
-      let item = items[i];
-      removeClass(item.inviteBtn, className.ACTIVE);
     }
   }
 

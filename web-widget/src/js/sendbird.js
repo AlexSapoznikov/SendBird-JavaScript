@@ -21,13 +21,13 @@ class Sendbird {
     return !!this.sb.currentUser;
   }
 
-  connect(userId, nickname, action) {
+  connect(userId, nickname, profileImageUrl = '', action) {
     this.sb.connect(userId.trim(), (user, error) => {
       if (error) {
         console.error(error);
         return;
       }
-      this.sb.updateCurrentUserInfo(nickname.trim(), '', (response, error) => {
+      this.sb.updateCurrentUserInfo(nickname.trim(), profileImageUrl, (response, error) => {
         if (error) {
           console.error(error);
           return;

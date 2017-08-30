@@ -56,7 +56,7 @@ class SBWidget {
     }
   }
 
-  startWithConnect (appId, userId, nickname, callback) {
+  startWithConnect (appId, userId, nickname, profileImageUrl, callback) {
     if (!window.SendBird) {
       console.error(ERROR_MESSAGE_SDK);
       return;
@@ -72,7 +72,7 @@ class SBWidget {
       this._start(appId, {
         skipLoginScreen: true
       });
-      this._connect(userId, nickname, callback);
+      this._connect(userId, nickname, profileImageUrl, callback);
     } else {
       console.error(ERROR_MESSAGE);
     }
@@ -109,7 +109,7 @@ class SBWidget {
 
   _initClickEvent (event) {
     var _checkPopup = function (_target, obj) {
-      if (obj === _target || hasClass(_target, className.IC_MEMBERS) || hasClass(_target, className.IC_INVITE)) {
+      if (obj === _target || hasClass(_target, className.IC_MEMBERS)) {
         return true;
       } else {
         var returnedCheck = false;
@@ -123,9 +123,6 @@ class SBWidget {
 
     if (!_checkPopup(event.target, this.popup.memberPopup)) {
       this.closeMemberPopup();
-    }
-    if (!_checkPopup(event.target, this.popup.invitePopup)) {
-      this.closeInvitePopup();
     }
   }
 
@@ -252,7 +249,6 @@ class SBWidget {
       });
       hide(chatBoard.leaveBtn);
       hide(chatBoard.memberBtn);
-      hide(chatBoard.inviteBtn);
     });
   }
 
@@ -313,8 +309,8 @@ class SBWidget {
     });
   }
 
-  _connect (userId, nickname, callback) {
-    this.sb.connect(userId, nickname, () => {
+  _connect (userId, nickname, profileImageUrl = '', callback) {
+    this.sb.connect(userId, nickname, profileImageUrl, () => {
       this.widgetBtn.toggleIcon(true);
 
       this.listBoard.showChannelList();
@@ -441,7 +437,7 @@ class SBWidget {
   createChannelItem (channel) {
     let item = this.listBoard.createChannelItem(
       channel.url,
-      channel.coverUrl,
+      this._getChannelPicture(channel),
       this.sb.getNicknamesString(channel),
       this.sb.getMessageTime(channel.lastMessage),
       this.sb.getLastMessage(channel),
@@ -462,20 +458,27 @@ class SBWidget {
     return item;
   }
 
+  _getChannelPicture(channel) {
+    const sender = channel.lastMessage && channel.lastMessage.sender;
+    if (sender && !this.sb.isCurrentUser(sender)) {
+      return sender.profileUrl;
+    }
+
+    const member = channel.members.find(member => !this.sb.isCurrentUser(member));
+    if (member) {
+      return member.profileUrl;
+    }
+
+    return '';
+  }
+
   closePopup () {
     this.closeMemberPopup();
-    this.closeInvitePopup();
   }
 
   closeMemberPopup () {
     this.chatSection.removeMemberPopup();
     this.popup.closeMemberPopup();
-  }
-
-  closeInvitePopup () {
-    this.chatSection.removeInvitePopup();
-    this.popup.closeInvitePopup();
-    this.sb.userListQuery = null;
   }
 
   showChannel (channelUrl) {
@@ -516,7 +519,6 @@ class SBWidget {
         this.closeMemberPopup();
       } else {
         this.closeMemberPopup();
-        this.closeInvitePopup();
         addClass(chatBoard.memberBtn, className.ACTIVE);
         let index = this.chatSection.indexOfChatBord(channelUrl);
         this.popup.showMemberPopup(this.chatSection.self, index);
@@ -524,68 +526,12 @@ class SBWidget {
         this.popup.updateCount(this.popup.memberPopup.count, channelSet.channel.memberCount);
         for (var i = 0; i < channelSet.channel.members.length; i++) {
           let member = channelSet.channel.members[i];
-          let item = this.popup.createMemberItem(member, false, this.sb.isCurrentUser(member));
+          let item = this.popup.createMemberItem(member, this.sb.isCurrentUser(member));
           this.popup.memberPopup.list.appendChild(item);
         }
       }
     });
-    this.chatSection.addClickEvent(chatBoard.inviteBtn, () => {
-      var _getUserList = (memberIds, loadmore) => {
-        this.sb.getUserList((userList) => {
-          if (!loadmore) {
-            this.spinner.remove(this.popup.invitePopup.list);
-          }
-          for (var i = 0; i < userList.length; i++) {
-            let user = userList[i];
-            if (memberIds.indexOf(user.userId) < 0) {
-              let item = this.popup.createMemberItem(user, true);
-              this.popup.addClickEvent(item, () => {
-                hasClass(item.select, className.ACTIVE) ? removeClass(item.select, className.ACTIVE) : addClass(item.select, className.ACTIVE);
-                let selectedUserCount = this.popup.getSelectedUserIds(this.popup.invitePopup.list).length;
-                this.popup.updateCount(this.popup.invitePopup.count, selectedUserCount);
-                (selectedUserCount > 0) ? removeClass(this.popup.invitePopup.inviteBtn, className.DISABLED) : addClass(this.popup.invitePopup.inviteBtn, className.DISABLED);
-              });
-              this.popup.invitePopup.list.appendChild(item);
-            }
-          }
-        });
-      };
 
-      if (hasClass(chatBoard.inviteBtn, className.ACTIVE)) {
-        this.closeInvitePopup();
-      } else {
-        this.closeInvitePopup();
-        this.closeMemberPopup();
-        addClass(chatBoard.inviteBtn, className.ACTIVE);
-        let index = this.chatSection.indexOfChatBord(channelUrl);
-        this.popup.showInvitePopup(this.chatSection.self, index);
-        this.spinner.insert(this.popup.invitePopup.list);
-        let channelSet = this.getChannelSet(channelUrl);
-        let memberIds = channelSet.channel.members.map((member) => {
-          return member.userId;
-        });
-        _getUserList(memberIds);
-
-        this.popup.addClickEvent(this.popup.invitePopup.inviteBtn, () => {
-          if (!hasClass(this.popup.invitePopup.inviteBtn, className.DISABLED)) {
-            addClass(this.popup.invitePopup.inviteBtn, className.DISABLED);
-            this.spinner.insert(this.popup.invitePopup.inviteBtn);
-            let selectedUserIds = this.popup.getSelectedUserIds(this.popup.invitePopup.list);
-            let channelSet = this.getChannelSet(channelUrl);
-            this.sb.inviteMember(channelSet.channel, selectedUserIds, () => {
-              this.spinner.remove(this.popup.invitePopup.inviteBtn);
-              this.closeInvitePopup();
-              this.listBoard.setChannelTitle(channelSet.channel.url, this.sb.getNicknamesString(channelSet.channel));
-              this.updateChannelInfo(chatBoard, channelSet.channel);
-            });
-          }
-        });
-
-        this.popup.addScrollEvent(() => {
-          _getUserList(memberIds, true);
-        });
-      }
-    });
     this.spinner.insert(chatBoard.content);
     this.sb.getChannelInfo(channelUrl, (channel) => {
       this.updateChannelInfo(chatBoard, channel);
