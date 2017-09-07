@@ -69,9 +69,7 @@ class SBWidget {
       });
       this._init();
       this.spinner.insert(this.listBoard.list);
-      this._start(appId, {
-        skipLoginScreen: true
-      });
+      this._start(appId);
       this._connect(userId, nickname, profileImageUrl, callback);
     } else {
       console.error(ERROR_MESSAGE);
@@ -252,7 +250,7 @@ class SBWidget {
     });
   }
 
-  _start (appId, props = {}) {
+  _start (appId) {
     this.sb = new Sendbird(appId);
 
     this.popup.addCloseBtnClickEvent(() => {
@@ -260,25 +258,11 @@ class SBWidget {
     });
 
     this.widgetBtn.addClickEvent(() => {
-      const isConnected = this.sb.isConnected();
-
-      if (props.skipLoginScreen) {
-        this.listBoard.showChannelList();
-      } else {
-        isConnected ? this.listBoard.showChannelList() : this.listBoard.showLoginForm();
-      }
-
-      this.toggleBoard(true);
-      this.listBoard.addChannelListScrollEvent(() => {
-        this.getChannelList();
-      });
-      this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
+      this.openWidget();
     });
 
     this.listBoard.addMinimizeClickEvent(() => {
-      this.closePopup();
-      this.toggleBoard(false);
-      this.chatSection.responsiveSize(true, this.responsiveChatSection.bind(this));
+      this.closeWidget();
     });
 
     this.listBoard.addLogoutClickEvent(() => {
@@ -307,6 +291,25 @@ class SBWidget {
         this.listBoard.btnLogin.click();
       }
     });
+  }
+
+  openWidget () {
+    this.listBoard.showChannelList();
+    this.toggleBoard(true);
+    this.listBoard.addChannelListScrollEvent(() => {
+      this.getChannelList();
+    });
+    this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
+  }
+
+  closeWidget () {
+    this.closePopup();
+    this.toggleBoard(false);
+    this.chatSection.responsiveSize(true, this.responsiveChatSection.bind(this));
+  }
+
+  _getWindow () {
+    return window;
   }
 
   _connect (userId, nickname, profileImageUrl = '', callback) {
@@ -557,6 +560,15 @@ class SBWidget {
   }
 
   updateUnreadMessageCount (channel) {
+    this._getWindow().dispatchEvent(
+      new CustomEvent('channelChangedEvent', {
+        detail: {
+          changed: channel,
+          all: this.sb && this.sb.sb ? this.sb.sb.GroupChannel.cachedChannels : null
+        }
+      })
+    );
+
     this.sb.getTotalUnreadCount((unreadCount) => {
       this.widgetBtn.setUnreadCount(unreadCount);
     });
