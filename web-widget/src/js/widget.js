@@ -308,6 +308,11 @@ class SBWidget {
     this.chatSection.responsiveSize(true, this.responsiveChatSection.bind(this));
   }
 
+  isWidgetOpen () {
+    return this.widgetBtn.self.className.includes(className.FADE_OUT) &&
+      this.listBoard.self.className.includes(className.FADE_IN);
+  }
+
   _getWindow () {
     return window;
   }
@@ -753,11 +758,15 @@ class SBWidget {
 
   toggleBoard (isShow) {
     if (isShow) {
-      hide(addClass(removeClass(this.widgetBtn.self, className.FADE_IN), className.FADE_OUT));
-      show(addClass(removeClass(this.listBoard.self, className.FADE_OUT), className.FADE_IN));
+      if (!this.isWidgetOpen()) {
+        hide(addClass(removeClass(this.widgetBtn.self, className.FADE_IN), className.FADE_OUT));
+        show(addClass(removeClass(this.listBoard.self, className.FADE_OUT), className.FADE_IN));
+      }
     } else {
-      hide(addClass(removeClass(this.listBoard.self, className.FADE_IN), className.FADE_OUT));
-      show(addClass(removeClass(this.widgetBtn.self, className.FADE_OUT), className.FADE_IN));
+      if (this.isWidgetOpen()) {
+        hide(addClass(removeClass(this.listBoard.self, className.FADE_IN), className.FADE_OUT));
+        show(addClass(removeClass(this.widgetBtn.self, className.FADE_OUT), className.FADE_IN));
+      }
     }
   }
 }
