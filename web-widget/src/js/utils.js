@@ -11,9 +11,12 @@ export function hide(target) {
   if (target) {
     if (hasClassRegex(target, ANIMATION_REGEX)) {
       let hideAnimationEvent;
+      target.classList.add('hide');
       target.addEventListener(ANIMATION_EVENT, hideAnimationEvent = function() {
-        target.style.display = DISPLAY_NONE;
-        target.removeEventListener(ANIMATION_EVENT, hideAnimationEvent, false);
+        if (target.classList.contains('hide')) {
+          target.style.display = DISPLAY_NONE;
+          target.removeEventListener(ANIMATION_EVENT, hideAnimationEvent, false);
+        }
       });
     } else {
       target.style.display = DISPLAY_NONE;
@@ -23,6 +26,7 @@ export function hide(target) {
 
 export function show(target, displayType) {
   if (target) {
+    target.classList.remove('hide');
     displayType ? target.style.display = displayType : target.style.display = DISPLAY_BLOCK;
   }
 }

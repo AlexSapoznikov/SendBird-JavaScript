@@ -29,6 +29,8 @@ const ERROR_MESSAGE = 'Please create "sb_widget" element on first.';
 const ERROR_MESSAGE_SDK = 'Please import "SendBird SDK" on first.';
 const EVENT_TYPE_CLICK = 'click';
 
+let oneChatActiveOnly = false;
+
 window.WebFontConfig = {
   google: {families: ['Lato:400,700']}
 };
@@ -56,11 +58,15 @@ class SBWidget {
     }
   }
 
-  startWithConnect (appId, userId, nickname, profileImageUrl, callback) {
+  startWithConnect (appId, userId, nickname, profileImageUrl, props = null, callback) {
     if (!window.SendBird) {
       console.error(ERROR_MESSAGE_SDK);
       return;
     }
+
+    // Props
+    oneChatActiveOnly = props && props.oneChatActiveOnly;
+
     this._getGoogleFont();
     this.widget = document.getElementById(WIDGET_ID);
     if (this.widget) {
@@ -70,7 +76,7 @@ class SBWidget {
       this._init();
       this.spinner.insert(this.listBoard.list);
       this._start(appId);
-      this._connect(userId, nickname, profileImageUrl, callback);
+      this._connect(userId, nickname, profileImageUrl, props ? callback : props);
     } else {
       console.error(ERROR_MESSAGE);
     }
@@ -452,16 +458,8 @@ class SBWidget {
       this.sb.getChannelUnreadCount(channel)
     );
     this.listBoard.addChannelClickEvent(item, () => {
-      this.closePopup();
       let channelUrl = item.getAttribute('data-channel-url');
-      let openChatBoard = this.chatSection.getChatBoard(channelUrl);
-      if (!openChatBoard) {
-        var newChat = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
-        if (newChat) {
-          this.chatSection.closeChatBoard(newChat);
-        }
-        this._connectChannel(channelUrl);
-      }
+      this.showChannel(channelUrl, oneChatActiveOnly);
     });
     return item;
   }
@@ -489,8 +487,25 @@ class SBWidget {
     this.popup.closeMemberPopup();
   }
 
-  showChannel (channelUrl) {
-    this._connectChannel(channelUrl, false);
+  showChannel (channelUrl, closeOtherChannels = false) {
+    if (closeOtherChannels) {
+      this.closeAllChats();
+    }
+
+    this.closePopup();
+    let openChatBoard = this.chatSection.getChatBoard(channelUrl);
+    if (!openChatBoard) {
+      var newChat = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
+      if (newChat) {
+        this.chatSection.closeChatBoard(newChat);
+      }
+      this._connectChannel(channelUrl);
+    }
+  }
+
+  closeAllChats () {
+    this.chatSection.closeAllChats();
+    this.activeChannelSetList = [];
   }
 
   _connectChannel (channelUrl, doNotCall) {
@@ -758,15 +773,11 @@ class SBWidget {
 
   toggleBoard (isShow) {
     if (isShow) {
-      if (!this.isWidgetOpen()) {
-        hide(addClass(removeClass(this.widgetBtn.self, className.FADE_IN), className.FADE_OUT));
-        show(addClass(removeClass(this.listBoard.self, className.FADE_OUT), className.FADE_IN));
-      }
+      hide(addClass(removeClass(this.widgetBtn.self, className.FADE_IN), className.FADE_OUT));
+      show(addClass(removeClass(this.listBoard.self, className.FADE_OUT), className.FADE_IN));
     } else {
-      if (this.isWidgetOpen()) {
-        hide(addClass(removeClass(this.listBoard.self, className.FADE_IN), className.FADE_OUT));
-        show(addClass(removeClass(this.widgetBtn.self, className.FADE_OUT), className.FADE_IN));
-      }
+      hide(addClass(removeClass(this.listBoard.self, className.FADE_IN), className.FADE_OUT));
+      show(addClass(removeClass(this.widgetBtn.self, className.FADE_OUT), className.FADE_IN));
     }
   }
 }

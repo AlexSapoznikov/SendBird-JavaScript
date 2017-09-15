@@ -215,6 +215,13 @@ class ChatSection extends Element {
     this.textKr = '';
   }
 
+  closeAllChats() {
+    var items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
+    for (var i = 0 ; i < items.length ; i++) {
+      this.closeChatBoard(items[i]);
+    }
+  }
+
   createMessageContent(target) {
     var chatContent = this.createDiv();
     this._setClass(chatContent, [className.CONTENT]);
