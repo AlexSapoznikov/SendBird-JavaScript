@@ -30,6 +30,7 @@ const ERROR_MESSAGE_SDK = 'Please import "SendBird SDK" on first.';
 const EVENT_TYPE_CLICK = 'click';
 
 let oneChatActiveOnly = false;
+let hideChatOnWidgetClosed = false;
 
 window.WebFontConfig = {
   google: {families: ['Lato:400,700']}
@@ -66,6 +67,7 @@ class SBWidget {
 
     // Props
     oneChatActiveOnly = props && props.oneChatActiveOnly;
+    hideChatOnWidgetClosed = props && props.hideChatOnWidgetClosed;
 
     this._getGoogleFont();
     this.widget = document.getElementById(WIDGET_ID);
@@ -268,7 +270,7 @@ class SBWidget {
     });
 
     this.listBoard.addMinimizeClickEvent(() => {
-      this.closeWidget();
+      this.closeWidget(hideChatOnWidgetClosed);
     });
 
     this.listBoard.addLogoutClickEvent(() => {
@@ -308,10 +310,14 @@ class SBWidget {
     this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
   }
 
-  closeWidget () {
+  closeWidget (hideChatOnWidgetClosed = false) {
     this.closePopup();
     this.toggleBoard(false);
     this.chatSection.responsiveSize(true, this.responsiveChatSection.bind(this));
+
+    if (hideChatOnWidgetClosed) {
+      this.closeAllChats();
+    }
   }
 
   isWidgetOpen () {
