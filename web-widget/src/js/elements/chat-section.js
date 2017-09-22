@@ -90,12 +90,12 @@ class ChatSection extends Element {
     chatBoard.count = chatMemberCount;
     chatTop.appendChild(chatMemberCount);
 
-    var topBtnClose = this.createDiv();
+    var topBtnClose = this.createButton();
     this._setClass(topBtnClose, [className.BTN, className.IC_CLOSE]);
     chatBoard.closeBtn = topBtnClose;
     chatTop.appendChild(topBtnClose);
 
-    var topBtnLeave = this.createDiv();
+    var topBtnLeave = this.createButton();
     this._setClass(topBtnLeave, [className.BTN, className.IC_LEAVE]);
     chatBoard.leaveBtn = topBtnLeave;
 
@@ -106,7 +106,7 @@ class ChatSection extends Element {
     topBtnLeave.appendChild(tooltipLeave);
     chatTop.appendChild(topBtnLeave);
 
-    var topBtnMembers = this.createDiv();
+    var topBtnMembers = this.createButton();
     this._setClass(topBtnMembers, [className.BTN, className.IC_MEMBERS]);
     chatBoard.memberBtn = topBtnMembers;
 

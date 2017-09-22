@@ -15,6 +15,25 @@
   font-weight: $font-weight-default;
   -webkit-font-smoothing: antialiased;
 
+  .btn {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    position: relative;
+
+    .tooltip {
+      top: auto !important;
+      width: 78px !important;
+      position: absolute !important;
+      line-height: 16px !important;
+      left: -39px !important;
+      height: auto !important;
+      bottom: calc(100% + 5px) !important;
+      padding: 7px 12px !important;
+    }
+  }
+
   // Animations
   .sb-fade-in {
     @include reset();
@@ -256,10 +275,6 @@
         width: 24px;
         height: 26px;
         cursor: pointer;
-        background-color: transparent;
-        border: none;
-        box-shadow: none;
-        outline: none;
         @include transform-translate(0, -50%);
         @include hover {
           & > .tooltip {
