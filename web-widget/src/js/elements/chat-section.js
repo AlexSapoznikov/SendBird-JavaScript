@@ -139,12 +139,12 @@ class ChatSection extends Element {
       leavePopup.appendChild(leaveTitle);
 
       var div = this.createDiv();
-      var leaveBtn = this.createDiv();
+      var leaveBtn = this.createButton();
       this._setClass(leaveBtn, [className.LEAVE_BTN]);
       this._setContent(leaveBtn, TITLE_CHAT_LEAVE_BTN);
       div.appendChild(leaveBtn);
 
-      var cancelBtn = this.createDiv();
+      var cancelBtn = this.createButton();
       this._setClickEvent(cancelBtn, () => {
         target.removeChild(leavePopup);
         target.leavePopup = null;
