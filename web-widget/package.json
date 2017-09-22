@@ -4,8 +4,8 @@
   "description": "SendBird Widget Sample",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -p",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack -p",
+    "test": "npm run build && open index.html"
   },
   "author": "SendBird",
   "license": "ISC",

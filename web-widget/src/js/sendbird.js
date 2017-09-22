@@ -46,7 +46,7 @@ class Sendbird {
   }
 
   isCurrentUser(user) {
-    return this.sb.currentUser.userId == user.userId;
+    return this.sb && this.sb.currentUser && user && this.sb.currentUser.userId === user.userId;
   }
 
   /*
@@ -211,12 +211,14 @@ class Sendbird {
    */
   getNicknamesString(channel) {
     let nicknameList = [];
-    let currentUserId = this.sb.currentUser.userId;
-    channel.members.forEach(function(member) {
-      if (member.userId != currentUserId) {
-        nicknameList.push(xssEscape(member.nickname));
-      }
-    });
+    if (this.sb && this.sb.currentUser) {
+      let currentUserId = this.sb.currentUser.userId;
+      channel.members.forEach(function(member) {
+        if (member.userId != currentUserId) {
+          nicknameList.push(xssEscape(member.nickname));
+        }
+      });
+    }
     return nicknameList.toString();
   }
 

@@ -46,16 +46,16 @@ class ListBoard extends Element {
     this._setContent(this.topTitle, TITLE_TOP_LOGIN);
     boardTop.appendChild(this.topTitle);
 
-    this.btnMini = this.createDiv();
+    this.btnMini = this.createButton();
     this._setClass(this.btnMini, [className.BTN, className.IC_MINIMIZE]);
     boardTop.appendChild(this.btnMini);
 
-    this.btnOption = this.createDiv();
-    this._setClass(this.btnOption, [className.BTN, className.IC_OPTION]);
+    // Options button:
+    // this.btnOption = this.createButton();
+    // this._setClass(this.btnOption, [className.BTN, className.IC_OPTION]);
+    // boardTop.appendChild(this.btnOption);
 
-    boardTop.appendChild(this.btnOption);
-
-    this.addOptionClickEvent();
+    // this.addOptionClickEvent();
 
     var newChatTooltip = this.createSpan();
     this._setClass(newChatTooltip, [className.TOOLTIP]);
@@ -68,15 +68,15 @@ class ListBoard extends Element {
     this._setClickEvent(this.btnMini, action);
   }
 
-  addOptionClickEvent() {
-    if (!this._getOptionEventLock()) {
-      this._setClickEvent(this.btnOption, () => {
-        if (!hasClass(this.btnOption, className.ACTIVE)) {
-          addClass(this.btnOption, className.ACTIVE);
-        }
-      });
-    }
-  }
+  // addOptionClickEvent() {
+  //   if (!this._getOptionEventLock()) {
+  //     this._setClickEvent(this.btnOption, () => {
+  //       if (!hasClass(this.btnOption, className.ACTIVE)) {
+  //         addClass(this.btnOption, className.ACTIVE);
+  //       }
+  //     });
+  //   }
+  // }
 
   addLogoutClickEvent(action) {
     this.setOptionEventLock(true);
@@ -140,7 +140,7 @@ class ListBoard extends Element {
       this.self.removeChild(this.listContent);
     }
     this._setContent(this.topTitle, TITLE_TOP_LOGIN);
-    hide(this.btnOption);
+    // hide(this.btnOption);
     this.self.appendChild(this.loginForm);
     this._toggleLoginBtn();
   }
@@ -199,7 +199,7 @@ class ListBoard extends Element {
       this._cleanLoginForm();
     }
     this._setContent(this.topTitle, TITLE_TOP_CHANNEL);
-    show(this.btnOption);
+    // show(this.btnOption);
     this.self.appendChild(this.listContent);
   }
 
@@ -257,7 +257,7 @@ class ListBoard extends Element {
 
     item.appendChild(itemContent);
 
-    var li = this.createLi();
+    var li = this.createButton();
     this._setDataset(li, 'channel-url', channelUrl);
     li.topTitle = contentTitle;
     li.time = contentTime;

@@ -641,16 +641,21 @@ class SBWidget {
             this.chatSection.textKr = target.input.textContent;
           }
 
-          if (event.keyCode == KEY_DOWN_ENTER && !event.shiftKey) {
-            let textMessage = target.input.textContent || this.chatSection.textKr;
-            if (!isEmptyString(textMessage.trim())) {
-              this.sb.sendTextMessage(channelSet.channel, textMessage, (message) => {
-                this.messageReceivedAction(channelSet.channel, message);
-              });
+          if (event.keyCode == KEY_DOWN_ENTER) {
+            event.preventDefault();
+
+            if (event.shiftKey) { // add new line
+              target.input.value += '\n';
+            } else {  // Send message
+              let textMessage = target.input.value;
+              if (!isEmptyString(textMessage.trim())) {
+                this.sb.sendTextMessage(channelSet.channel, textMessage, (message) => {
+                  this.messageReceivedAction(channelSet.channel, message);
+                });
+              }
+              this.chatSection.clearInputText(target.input, channelSet.channel.url);
+              channelSet.channel.endTyping();
             }
-            this.chatSection.clearInputText(target.input, channelSet.channel.url);
-            this.chatSection.textKr = '';
-            channelSet.channel.endTyping();
           } else {
             channelSet.channel.startTyping();
           }

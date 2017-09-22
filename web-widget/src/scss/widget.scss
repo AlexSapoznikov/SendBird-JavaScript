@@ -256,6 +256,10 @@
         width: 24px;
         height: 26px;
         cursor: pointer;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        outline: none;
         @include transform-translate(0, -50%);
         @include hover {
           & > .tooltip {
@@ -398,13 +402,16 @@
         padding: 0;
         list-style-type: none;
 
-        li {
+        li, button {
           @include reset();
           width: calc(100% - 24px);
           height: 48px;
           padding: 0 12px;
           background-color: $color-white;
           cursor: pointer;
+          box-shadow: none;
+          border: none;
+          outline: none;
           @include hover {
             background-color: $color-list-hover;
             .content {
@@ -440,6 +447,7 @@
           @include reset();
           width: 100%;
           height: 50%;
+          text-align: left;
 
           .title {
             @include reset();
@@ -467,6 +475,7 @@
           @include reset();
           width: 100%;
           height: 50%;
+          text-align: left;
 
           .last-message {
             @include reset();

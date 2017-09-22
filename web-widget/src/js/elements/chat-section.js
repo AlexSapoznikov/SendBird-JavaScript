@@ -242,6 +242,7 @@ class ChatSection extends Element {
     this._setClass(contentInput, [className.INPUT]);
 
     var chatText = this.createTextInput();
+    chatText.setAttribute('placeholder', 'Type your message');
     contentInput.appendChild(chatText);
 
     var chatFile = this.createLabel();
@@ -268,18 +269,13 @@ class ChatSection extends Element {
   }
 
   createTextInput() {
-    var chatText = this.createDiv();
+    var chatText = this.createTextArea();
     this._setClass(chatText, [className.TEXT]);
-    chatText.setAttribute('contenteditable', true);
     return chatText;
   }
 
   clearInputText(target, channelUrl) {
-    let items = target.querySelectorAll(this.tagName.DIV);
-    for (var i = 0 ; i < items.length ; i++) {
-      let item = items[i];
-      item.remove();
-    }
+    target.value = '';
     this._setContent(target, EMPTY_STRING);
     this.responsiveHeight(channelUrl);
   }
@@ -396,6 +392,7 @@ class ChatSection extends Element {
       this._setClass(itemText, [className.TEXT]);
       var urlexp = new RegExp('(http|https)://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?', 'i');
       var _message = message.message;
+
       if (urlexp.test(_message)) {
         _message = '<a href="' + _message + (isCurrentUser ? '" target="_blank" style="color: #FFFFFF;">' : '" target="_blank" style="color: #444444;">') + _message + '</a>';
         if (message.customType === 'url_preview') {
@@ -420,7 +417,10 @@ class ChatSection extends Element {
           _message += '<hr>' + _siteName.outerHTML + _title.outerHTML + _description.outerHTML + _image.outerHTML;
         }
       } else {
-        _message = xssEscape(_message);
+        _message = _message
+          .split('\n')
+          .map(m => xssEscape(m))
+          .join('<br>');
       }
       this._setContent(itemText, _message);
     } else if (message.isFileMessage()) {

@@ -12,9 +12,11 @@ class Element {
       LI: 'li',
       TIME: 'time',
       LABEL: 'label',
+      BUTTON: 'BUTTON',
       A: 'a',
       IMG: 'img',
-      VIDEO: 'video'
+      VIDEO: 'video',
+      TEXTAREA: 'textarea'
     };
     this.eventName = {
       CLICK: 'click',
@@ -31,6 +33,10 @@ class Element {
    */
   createDiv() {
     return document.createElement(this.tagName.DIV);
+  }
+
+  createButton() {
+    return document.createElement(this.tagName.BUTTON);
   }
 
   createTime() {
@@ -55,6 +61,10 @@ class Element {
 
   createInput() {
     return document.createElement(this.tagName.INPUT);
+  }
+
+  createTextArea() {
+    return document.createElement(this.tagName.TEXTAREA);
   }
 
   createUl() {
