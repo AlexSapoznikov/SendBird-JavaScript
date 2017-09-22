@@ -48,7 +48,7 @@ class Popup extends Element {
     this._setContent(topCount, '0');
     popupTop.appendChild(topCount);
 
-    this.memberCloseBtn = this.createDiv();
+    this.memberCloseBtn = this.createButton();
     this._setClass(this.memberCloseBtn, [className.BTN, className.IC_CLOSE]);
     popupTop.appendChild(this.memberCloseBtn);
 
