@@ -856,6 +856,11 @@
         padding: 0 8px 8px 8px;
 
         .message-list {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: flex-end;
+          min-height: 100%;
         }
       }
 
@@ -1089,6 +1094,8 @@
     }
     .message-set.user {
       float: right;
+      text-align: right;
+
       .image,
       .nickname {
         display: none;
