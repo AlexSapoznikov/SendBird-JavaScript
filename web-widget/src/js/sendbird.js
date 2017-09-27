@@ -21,8 +21,8 @@ class Sendbird {
     return !!this.sb.currentUser;
   }
 
-  connect(userId, nickname, profileImageUrl = '', action) {
-    this.sb.connect(userId.trim(), (user, error) => {
+  connect(userId, accessToken, nickname, profileImageUrl = '', action) {
+    this.sb.connect(userId.trim(), accessToken, (user, error) => {
       if (error) {
         console.error(error);
         return;

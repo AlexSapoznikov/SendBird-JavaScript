@@ -59,11 +59,14 @@ class SBWidget {
     }
   }
 
-  startWithConnect (appId, userId, nickname, profileImageUrl, props = null, callback) {
+  startWithConnect (appId, accessToken = null, user = {}, props = null, callback) {
     if (!window.SendBird) {
       console.error(ERROR_MESSAGE_SDK);
       return;
     }
+
+    // User
+    const { userId, nickname, profileImageUrl } = user;
 
     // Props
     oneChatActiveOnly = props && props.oneChatActiveOnly;
@@ -78,7 +81,7 @@ class SBWidget {
       this._init();
       this.spinner.insert(this.listBoard.list);
       this._start(appId);
-      this._connect(userId, nickname, profileImageUrl, props ? callback : props);
+      this._connect(userId, accessToken, nickname, profileImageUrl, props ? callback : props);
     } else {
       console.error(ERROR_MESSAGE);
     }
@@ -291,7 +294,7 @@ class SBWidget {
         this.listBoard.userId.disabled = true;
         this.listBoard.nickname.disabled = true;
 
-        this._connect(this.listBoard.getUserId(), this.listBoard.getNickname());
+        this._connect(this.listBoard.getUserId(), null, this.listBoard.getNickname());
       }
     });
     this.listBoard.addKeyDownEvent(this.listBoard.nickname, (event) => {
@@ -328,11 +331,11 @@ class SBWidget {
     return window;
   }
 
-  _connect (userId, nickname, profileImageUrl = '', callback) {
-    this.sb.connect(userId, nickname, profileImageUrl, () => {
+  _connect (userId, accessToken = null, nickname, profileImageUrl = '', callback) {
+    this.sb.connect(userId, accessToken, nickname, profileImageUrl, () => {
       this.widgetBtn.toggleIcon(true);
-
       this.listBoard.showChannelList();
+
       this.spinner.insert(this.listBoard.list);
       this.getChannelList();
 
