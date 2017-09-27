@@ -13,7 +13,6 @@ const TITLE_LOGIN_USER_ID = 'USER ID';
 const TITLE_LOGIN_NICKNAME = 'NICKNAME';
 const TITLE_LOGIN_BTN = 'Start Chat';
 const TITLE_EMPTY_ITEM = 'You currently have no conversations';
-const TITLE_NOT_AUTHORIZED = 'Your are not authorized to use this chat';
 
 const INPUT_TYPE = 'text';
 const INPUT_MAX_LENGTH = 20;
@@ -269,8 +268,17 @@ class ListBoard extends Element {
     return li;
   }
 
-  setNotAuthorized() {
+  setError(errorMsg) {
+    // 'Your are not authorized to use this chat'
+    var errEl = this.createDiv();
+    this._setClass(errEl, [className.ERROR_ITEM]);
 
+    var errTitle = this.createDiv();
+    this._setClass(errTitle, [className.TITLE]);
+    this._setContent(errTitle, errorMsg);
+
+    errEl.appendChild(errTitle);
+    this.listContent.appendChild(errEl);
   }
 
   checkEmptyList() {

@@ -25,14 +25,16 @@ class Sendbird {
     this.sb.connect(userId.trim(), accessToken, (user, error) => {
       if (error) {
         console.error(error);
+        action(error);
         return;
       }
       this.sb.updateCurrentUserInfo(nickname.trim(), profileImageUrl, (response, error) => {
         if (error) {
           console.error(error);
+          action(error);
           return;
         }
-        action();
+        action(error, user);
       });
     });
   }

@@ -31,6 +31,7 @@ export const className = {
   CONTENT_BOTTOM: 'content-bottom',
   LAST_MESSAGE: 'last-message',
   EMPTY_ITEM: 'empty-item',
+  ERROR_ITEM: 'error-item',
 
   CHAT_SECTION: 'chat-section',
   CHAT_BOARD: 'chat-board',

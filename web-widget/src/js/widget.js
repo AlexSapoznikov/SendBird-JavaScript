@@ -332,9 +332,19 @@ class SBWidget {
   }
 
   _connect (userId, accessToken = null, nickname, profileImageUrl = '', callback) {
-    this.sb.connect(userId, accessToken, nickname, profileImageUrl, () => {
+    this.sb.connect(userId, accessToken, nickname, profileImageUrl, (error, user) => {
       this.widgetBtn.toggleIcon(true);
       this.listBoard.showChannelList();
+
+      if (error) {
+        this.spinner.remove(this.listBoard.list);
+        if (error.code === 400302) {
+          this.listBoard.setError('You are not authorized to use this chat');
+          return;
+        }
+        this.listBoard.setError('Chat is not available at the moment. Please contact us if problem persist');
+        return;
+      }
 
       this.spinner.insert(this.listBoard.list);
       this.getChannelList();
